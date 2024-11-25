@@ -6613,7 +6613,7 @@ Email verified! You can close this tab or hit the back button.
     }
 
     async function doGetPid(): Promise<number> {
-      if (_.isUndefined(pid)) {
+      if (_.isUndefined(pid) || Number(pid) < 0) {
         const newPid = await getPidPromise(zid!, uid!, true);
         if (newPid === -1) {
           const rows = await addParticipant(zid!, uid!);
@@ -6669,6 +6669,10 @@ Email verified! You can close this tab or hit the back button.
           if (typeof xidUser === "object") {
             uid = xidUser.uid;
             pid = xidUser.pid;
+            if (Number(pid) < 0) {
+              const newPid = await doGetPid();
+              return newPid
+            }
             return pid;
           }
         }
